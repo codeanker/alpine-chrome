@@ -16,15 +16,15 @@ Following the changes with the [Rate Limiting on Docker Hub](https://www.docker.
 
 # Supported tags and respective `Dockerfile` links
 
-- `latest`, `89` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/Dockerfile)
-- `with-node`, `89-with-node`, `89-with-node-14` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-node/Dockerfile)
-- `with-puppeteer`, `89-with-puppeteer` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-puppeteer/Dockerfile)
-- `with-playwright`, `89-with-playwright` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-playwright/Dockerfile)
-- `with-selenoid`, `89-with-selenoid` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-selenoid/Dockerfile)
-- `with-chromedriver`, `89-with-chromedriver` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-chromedriver/Dockerfile)
-- `86`, `85`, `84`, `83`, `81`, `80`, `77`, `76`, `73`, `72`, `71`, `68`, `64`
-- `86-with-node`, `85-with-node`, `84-with-node`, `83-with-node`, `81-with-node`, `80-with-node`, `77-with-node`, `76-with-node`
-- `86-with-puppeteer`, `85-with-puppeteer`,`84-with-puppeteer`, `83-with-puppeteer`, `81-with-puppeteer`, `80-with-puppeteer`, `77-with-puppeteer`, `76-with-puppeteer`
+- `latest`, `100` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/Dockerfile)
+- `with-node`, `100-with-node`, `100-with-node-16` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-node/Dockerfile)
+- `with-puppeteer`, `100-with-puppeteer` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-puppeteer/Dockerfile)
+- `with-playwright`, `100-with-playwright` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-playwright/Dockerfile)
+- `with-selenoid`, `100-with-selenoid` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-selenoid/Dockerfile)
+- `with-chromedriver`, `100-with-chromedriver` [(Dockerfile)](https://github.com/Zenika/alpine-chrome/blob/master/with-chromedriver/Dockerfile)
+- `89`, `86`, `85`, `84`, `83`, `81`, `80`, `77`, `76`, `73`, `72`, `71`, `68`, `64`
+- `89-with-node`, `86-with-node`, `85-with-node`, `84-with-node`, `83-with-node`, `81-with-node`, `80-with-node`, `77-with-node`, `76-with-node`
+- `89-with-puppeteer`, `86-with-puppeteer`, `85-with-puppeteer`,`84-with-puppeteer`, `83-with-puppeteer`, `81-with-puppeteer`, `80-with-puppeteer`, `77-with-puppeteer`, `76-with-puppeteer`
 
 # alpine-chrome
 
@@ -37,7 +37,7 @@ In the world of webdev, the ability to run quickly end-to-end tests are importan
 
 ## 💡 Crafting the perfect container
 
-- 📦 Tiniest Headless Chrome (Compressed size: [162.62MB](https://github.com/Zenika/alpine-chrome#image-disk-size))
+- 📦 Tiniest Headless Chrome (Compressed size: [423 MB](https://github.com/Zenika/alpine-chrome#image-disk-size))
 - 🐳 Easy to use, ephemeral and reproducible Headless Chrome with Docker
 - 📝 Doc-friendly with examples for printing the DOM, generating an image with a mobile ratio or generating a PDF.
 - 👷‍♂️ Autobuild with the [Docker Hub](https://hub.docker.com/repository/docker/zenika/alpine-chrome) to sync the project and ship the images with confidence
@@ -180,6 +180,19 @@ These websites are tested with the following supported languages:
 - Japanese (with `https://www.yahoo.co.jp/`)
 - Korean (with `https://www.naver.com/`)
 
+# How to use with Puppeteer to test a Chrome Extension
+[According to puppeteer official doc](https://github.com/puppeteer/puppeteer/blob/main/docs/api.md#working-with-chrome-extensions) you can not test a Chrome Extension in headleass mode. You need a display available, that's where Xvfb comes in.
+
+See the ["with-puppeteer-xvfb"](https://github.com/Zenika/alpine-chrome/blob/master/with-puppeteer-xvfb) folder for more details. We have to [follow the mapping of Chromium => Puppeteer described here](https://github.com/puppeteer/puppeteer/blob/main/versions.js).
+
+Assuming you have a NodeJS/Puppeteer script in your `src` folder named `extension.js`, and the unpacked extension in the `chrome-extension` folder, you can launch it using the following command:
+
+```
+docker container run -it --rm -v $(pwd)/src:/usr/src/app/src --cap-add=SYS_ADMIN zenika/alpine-chrome:with-puppeteer-xvfb node src/extension.js
+```
+
+The extension provided will change the page background in red for every website visited. This demo will load the extension and take a screenshot of the icanhazip.com website.
+
 # How to use with Playwright
 
 Like ["Puppeteer"](https://pptr.dev/#?product=Puppeteer&version=v6.0.0&show=api-class-browser), we can do a lot things using ["Playwright"](https://playwright.dev/docs/core-concepts/#browser) with our Chrome Headless.
@@ -267,21 +280,21 @@ Some examples are available on the `examples` [directory](examples):
 
 ```
 docker container run -it --rm --entrypoint "" zenika/alpine-chrome cat /etc/alpine-release
-3.13.2
+3.15.4
 ```
 
 ## Chrome version
 
 ```
 docker container run -it --rm --entrypoint "" zenika/alpine-chrome chromium-browser --version
-Chromium 89.0.4389.72
+Chromium 100.0.4896.60
 ```
 
 ## Image disk size
 
 ```
 docker image inspect zenika/alpine-chrome --format='{{.Size}}'
-412889529
+357467827 # 341 MB
 ```
 
 # ✨ Contributors
